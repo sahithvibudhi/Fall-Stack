@@ -1,0 +1,16 @@
+@url = http://localhost:8088
+
+### Create User
+POST {{url}}/users
+Content-Type: application/json
+
+{
+    "username": "sahith",
+    "name": "Sahith Vibudhi"
+}
+
+### Fetch users
+GET {{url}}/users
+
+### delete a user with id 
+DELETE {{url}}/users/2
