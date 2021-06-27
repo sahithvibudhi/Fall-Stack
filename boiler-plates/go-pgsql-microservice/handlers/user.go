@@ -12,7 +12,7 @@ import (
 
 func getUsers(w rest.ResponseWriter, r *rest.Request) {
 	var users []models.User
-	models.DBInstance.Engine.Find(&users)
+	models.DB.Find(&users)
 	w.WriteJson(users)
 }
 
@@ -24,7 +24,7 @@ func postUser(w rest.ResponseWriter, r *rest.Request) {
 		rest.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	models.DBInstance.Engine.Insert(&user)
+	models.DB.Insert(&user)
 
 	w.WriteHeader(http.StatusCreated)
 	w.WriteJson(user)
@@ -34,7 +34,7 @@ func deleteUser(w rest.ResponseWriter, r *rest.Request) {
 	userId := r.PathParam("user-id")
 	user := models.User{}
 
-	affected, err := models.DBInstance.Engine.ID(userId).Delete(&user)
+	affected, err := models.DB.ID(userId).Delete(&user)
 	if err != nil {
 		helpers.Log.Error(fmt.Scanf("Could not delete user. Err: %s", err.Error()))
 	}

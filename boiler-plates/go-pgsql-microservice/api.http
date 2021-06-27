@@ -13,4 +13,4 @@ Content-Type: application/json
 GET {{url}}/users
 
 ### delete a user with id 
-DELETE {{url}}/users/2
+DELETE {{url}}/users/3

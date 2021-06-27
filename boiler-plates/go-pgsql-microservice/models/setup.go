@@ -9,45 +9,29 @@ import (
 	"github.com/sahithvibudhi/full-stack/boiler-plates/go-pgsql-microservice/helpers"
 )
 
-type Config struct {
-	host     string
-	port     string
-	user     string
-	password string
-	dbName   string
-	Engine   *xorm.Engine
-}
-
-var DBInstance *Config
+var DB *xorm.Engine
 
 func Setup() error {
-	DBInstance = &Config{
-		host:     "127.0.0.1",
-		port:     "5432",
-		user:     "postgres",
-		password: "postgres",
-		dbName:   "boilerplate",
-	}
-	err := DBInstance.Connect()
+	err := connect()
 	if err != nil {
 		return err
 	}
 
-	err = DBInstance.PingDB()
+	err = PingDB()
 	if err != nil {
 		return err
 	}
 
-	err = DBInstance.Migrate()
+	err = Migrate()
 
 	return err
 }
 
-func (c *Config) Connect() error {
-	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", c.host, c.port, c.user, c.password, c.dbName)
+func connect() error {
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", helpers.Config.DBHost, helpers.Config.DBPort, helpers.Config.DBUser, helpers.Config.DBPass, helpers.Config.DBName)
 
 	var err error
-	c.Engine, err = xorm.NewEngine("postgres", psqlInfo)
+	DB, err = xorm.NewEngine("postgres", psqlInfo)
 	if err != nil {
 		helpers.Log.Error(fmt.Sprintf("Failed to connect to the db. Err: %v", err))
 	}
@@ -55,8 +39,8 @@ func (c *Config) Connect() error {
 	return err
 }
 
-func (c *Config) PingDB() error {
-	err := c.Engine.Ping()
+func PingDB() error {
+	err := DB.Ping()
 	if err != nil {
 		helpers.Log.Error(fmt.Sprintf("Ping to DB Failed. Err: %v", err))
 	}
@@ -64,12 +48,12 @@ func (c *Config) PingDB() error {
 	return err
 }
 
-func (c *Config) Close() {
-	c.Engine.Close()
+func Close() {
+	DB.Close()
 }
 
-func (c *Config) Migrate() error {
-	m := migrate.New(c.Engine, &migrate.Options{
+func Migrate() error {
+	m := migrate.New(DB, &migrate.Options{
 		TableName:    "migrations",
 		IDColumnName: "id",
 	}, migrations)
