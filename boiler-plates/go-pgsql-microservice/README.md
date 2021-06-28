@@ -31,6 +31,8 @@ This boiler plate uses [go-json-rest](https://github.com/ant0ine/go-json-rest) f
 
 To add more endpoints, modify `handlers/setup.go`
 
+Endpoints in the projects are listed in `api.http` file in `RFC2616` format
+
 ## DB Models and Migrations
 This boiler plate uses [xorm](https://github.com/go-xorm/xorm) for DB connection, migrations and Queries
 
